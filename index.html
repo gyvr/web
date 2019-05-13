@@ -1,65 +1,168 @@
-	<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gyvr :: + Giving - Guilt</title>
+<style media="screen">
+	body {
+		background: #ccc;
+		color: rgba(0,0,0,0.87);
+		font-family: 'Public Sans', 'San Francisco', Roboto, Helvetica, Arial, sans-serif;
+		margin: 0;
+		padding: 0;
+	}
+	#animation_container {
+		position: absolute;
+		margin: auto;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+	}
+	div#hero {
+		height: 100vh;
+		background: white;
+		margin: 0px;
+		padding: 100px;
+	}
+	#hero h2 {
+		color: #ffa100;
+		font-weight: bold;
+		font-size: 16px;
+		margin: 0 0 8px;
+	}
+	#hero h1 {
+		font-size: 22px;
+		font-weight: 300;
+		color: rgba(0,0,0,0.6);
+		margin: 0 0 16px;
+	}
+	#hero p {
+		line-height: 140%;
+		margin: 16px 0 24px;
+		font-size: 14px;
+	}
+	#hero a {
+		display: block;
+		text-align: center;
+		background: #039be5;
+		text-transform: uppercase;
+		text-decoration: none;
+		color: white;
+		padding: 16px;
+		border-radius: 4px;
+	}
+	#hero a {
+		box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+	}
+	#load {
+		color: rgba(0,0,0,0.4);
+		text-align: center;
+		font-size: 13px;
+	}
+	div#signup {
+		height: 100vh;
+		background: #93CACD;
+		margin: 0px;
+		padding: 100px;
+	}
+	#signup h1 {
+		width: 50%;
+		font-size: 90pt;
+		font-weight: 800;
+		line-height: 90pt;
+		color: white;
+		margin: 0px;
+	}
+	#signup h2 {
+		width: 50%;
+		font-size: 42pt;
+		color:crimson
+	}
+	#signup h3 {
+		font-size: 18pt;
+		line-height: 1.5;
+		margin-bottom: 10pt;
+	}
+	
+	@media only screen and (max-width: 600px) {
+		#signup h1 {
+			font-size: 70pt;
+			line-height: 70pt;
+		}
+		#signup h2 {
+			font-size: 24pt;
+		}
+		#signup h3 {
+			font-size: 14pt;
+		}
+	}
+</style>
+	
+<script src="https://code.createjs.com/createjs-2015.11.26.min.js"></script>
+<script src="logo_canvas.js?1557706597702"></script>
+<script>
+	var canvas, stage, exportRoot, anim_container, dom_overlay_container, fnStartAnimation;
+	function init() {
+		canvas = document.getElementById("canvas");
+		anim_container = document.getElementById("animation_container");
+		dom_overlay_container = document.getElementById("dom_overlay_container");
+		var comp=AdobeAn.getComposition("6FF5B4169C3042AA88191365C74072E6");
+		var lib=comp.getLibrary();
+		var loader = new createjs.LoadQueue(false);
+		loader.addEventListener("fileload", function(evt){handleFileLoad(evt,comp)});
+		loader.addEventListener("complete", function(evt){handleComplete(evt,comp)});
+		var lib=comp.getLibrary();
+		loader.loadManifest(lib.properties.manifest);
+	}
+	function handleFileLoad(evt, comp) {
+		var images=comp.getImages();	
+		if (evt && (evt.item.type == "image")) { images[evt.item.id] = evt.result; }	
+	}
+	function handleComplete(evt,comp) {
+		//This function is always called, irrespective of the content. You can use the variable "stage" after it is created in token create_stage.
+		var lib=comp.getLibrary();
+		var ss=comp.getSpriteSheet();
+		var queue = evt.target;
+		var ssMetadata = lib.ssMetadata;
+		for(i=0; i<ssMetadata.length; i++) {
+			ss[ssMetadata[i].name] = new createjs.SpriteSheet( {"images": [queue.getResult(ssMetadata[i].name)], "frames": ssMetadata[i].frames} )
+		}
+		exportRoot = new lib.gyvr_animated_logo_canvas();
+		stage = new lib.Stage(canvas);	
+		//Registers the "tick" event listener.
+		fnStartAnimation = function() {
+			stage.addChild(exportRoot);
+			createjs.Ticker.setFPS(lib.properties.fps);
+			createjs.Ticker.addEventListener("tick", stage);
+		}	    
+		//Code to support hidpi screens and responsive scaling.
+		AdobeAn.makeResponsive(true,'both',true,1,[canvas,anim_container,dom_overlay_container]);	
+		AdobeAn.compositionLoaded(lib.properties.id);
+		fnStartAnimation();
+	}
+</script>
+</head>
 
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/6.0.1/firebase-app.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/6.0.1/firebase-auth.js"></script>
-    <script defer src="/__/firebase/6.0.1/firebase-database.js"></script>
-    <script defer src="/__/firebase/6.0.1/firebase-messaging.js"></script>
-    <script defer src="/__/firebase/6.0.1/firebase-storage.js"></script>
-    <!-- initialize the SDK after all desired features are loaded -->
-    <script defer src="/__/firebase/init.js"></script>
-
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
-    </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
-
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-
-        try {
-          let app = firebase.app();
-          let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
-          document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
-        }
-      });
-    </script>
-  </body>
+<body onload="init();">
+	<div id="hero">
+		<div id="animation_container" style="background-color:rgba(255, 255, 255, 1.00); width:1000px; height:1000px">
+			<canvas id="canvas" width="1000" height="1000" style="position: absolute; display: block; background-color:rgba(255, 255, 255, 1.00);"></canvas>
+			<div id="dom_overlay_container" style="pointer-events:none; overflow:hidden; width:1000px; height:1000px; position: absolute; left: 0px; top: 0px; display: block;"></div>
+		</div>
+	</div>
+	<div id="signup">
+			<h1>Good.<br>For you.</h1>
+			<h2>
+				Why does the giving experience have to suck?
+			</h2>
+			<h3>It should be easy to find effective, deserving charities algined with your values and interests.</h3>
+			<h3>You shouldn't be added to gajillions of mailing lists and constantly bombarded by guilt-drenched emails.</h3>
+			<h3>You should be able to manage, track and pay for your all your charitable giving as easily as your Netflix account.</h3>
+			<h3>And maybe, just maybe, giving could even be...a little <em>fun?</em></h3>
+	</div>
+	<p id="load">© 2019 Gyvr. All rights reserved.</p>
+</body>
+	
 </html>
